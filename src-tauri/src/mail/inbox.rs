@@ -22,10 +22,13 @@ pub fn parse_letters(msgs: &ZeroCopy<Vec<Fetch>>, mail: &mut Mail) {
 
 		let to = get_to(&message);
 		let from = get_from(&message);
+		let date = get_date(&message);
 		let subject = get_subject(&message);
 		let body = get_body(&message);
+		let bcc = get_bcc(&message);
+		let cc = get_cc(&message);
 
-		let letter = Letter {from: from, to: to, subject: subject, body: body};
+		let letter = Letter {from: from, to: to, bcc: bcc, cc: cc, date: date, subject: subject, body: body};
 
 		// Add the letter to the Mail struct State
 		mail.add_mail(letter);
@@ -74,6 +77,48 @@ fn get_from(message: &mail_parser::Message) -> Vec<LetterInformation> {
 		};
 		LetterInformation {address: address, name: name}
 	}).collect::<Vec<LetterInformation>>()
+}
+
+/// Get the bcc information from MessageParser.
+/// # Arguments
+/// * `message` - The Message we want to get the bcc from.
+fn get_bcc(message: &mail_parser::Message) -> Vec<LetterInformation> {
+	let bcc = match message.bcc() {
+		Some(bcc) => bcc,
+		None => return Vec::new(),
+	};
+
+	bcc.iter().map(|bcc| {
+		let address = bcc.address().unwrap_or_default().to_string();
+		let name = bcc.name().unwrap_or_default().to_string();
+		LetterInformation {address: address, name: name}
+	}).collect::<Vec<LetterInformation>>()
+}
+
+/// Get the cc information from MessageParser.
+/// # Arguments
+/// * `message` - The Message we want to get the cc from.
+fn get_cc(message: &mail_parser::Message) -> Vec<LetterInformation> {
+	let cc = match message.cc() {
+		Some(cc)=> cc,
+		None => return Vec::new(),
+	};
+
+	cc.iter().map(|cc| {
+		let address = cc.address().unwrap_or_default().to_string();
+		let name = cc.name().unwrap_or_default().to_string();
+		LetterInformation {address: address, name: name}
+	}).collect::<Vec<LetterInformation>>()
+}
+
+/// Get the date information from MessageParser.
+/// # Arguments
+/// * `message` - The Message we want to get the date from.
+fn get_date(message: &mail_parser::Message) -> i64 {
+	match message.date() {
+		Some(date) => date.to_timestamp(),
+		None => 0,
+	}
 }
 
 /// Get the subject information from MessageParser.

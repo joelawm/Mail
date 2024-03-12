@@ -16,8 +16,8 @@ import Package from '../types/package';
 
 export default {
 	/**
-		 * Grab the Rust Version Information
-		 */
+	 * Grab the Rust Version Information
+	 */
 	async beforeCreate() {
 		const msg = await invoke('package_version') as Package;
 

@@ -40,12 +40,11 @@ export default {
   methods: {
     async refresh() {
       this.client = await invoke('client_connect') as [Client];
-      this
-      console.log(this.client);
+      this.mail = await invoke('get_all_inboxes') as [Mail];
     },
   },
   created() {
     this.refresh()
   }
 }
-</script>../types/mail
+</script>

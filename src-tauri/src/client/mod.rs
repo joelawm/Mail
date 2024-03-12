@@ -83,11 +83,6 @@ impl Client {
 	pub fn create_mailbox(&mut self, mailbox: Mail) {
 		self.mailbox.push(mailbox)
 	}
-
-	/// Kills the idle session.
-	pub async fn destroy_session(&mut self) {
-		todo!()
-	}
 }
 
 impl ClientInfo {

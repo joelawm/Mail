@@ -28,7 +28,6 @@ async fn main() {
       .invoke_handler(tauri::generate_handler![
         version::package_version,
         client::commands::client_connect,
-        client::commands::client_disconnect,
         client::commands::get_all_inboxes,
         client::commands::get_mailbox
       ])

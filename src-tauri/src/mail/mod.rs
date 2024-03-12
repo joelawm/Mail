@@ -24,6 +24,9 @@ pub struct Mail {
 pub struct Letter {
 	pub from: Vec<LetterInformation>,
 	pub to: Vec<LetterInformation>,
+	pub bcc: Vec<LetterInformation>,
+	pub cc: Vec<LetterInformation>,
+	pub date: i64,
 	pub subject: String,
 	pub body: LetterBody,
 }
@@ -75,8 +78,6 @@ impl Mail {
 				Ok(msgs) => {
 					inbox::parse_letters(&msgs, &mut self);
 
-					println!("Mail: {:?}", msgs.len());
-
 					if msgs.len() == 0 {
 						break;
 					} else {
@@ -89,6 +90,9 @@ impl Mail {
 				Err(e) => println!("Error Fetching email: {}", e)
 			};
 		}
+
+		// Sort the mail by date
+		self.letter.sort_by(|a, b| b.date.cmp(&a.date));
 
 		self.to_owned()
 	}

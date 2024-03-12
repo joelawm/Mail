@@ -78,10 +78,3 @@ pub async fn get_mailbox(email: String, mailbox: String, clients: State<'_, Clie
 	}
 	Ok(Vec::new())
 }
-
-#[tauri::command]
-/// Disconnect the IMAP client
-pub async fn client_disconnect(clients: State<'_, ClientState>) -> Result<(), ()> {
-	clients.client.lock().await[0].destroy_session().await;
-	Ok(())
-}

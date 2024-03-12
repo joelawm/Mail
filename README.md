@@ -4,21 +4,22 @@ This is a Cross platform mail application. This was intended for my use on Linux
 ### Features:
 - [] Send Mail
 - [] Receive Mail
-- [] View Mail
+- [X] View Mail
+- [X] BCC Mail
+- [x] CC Mail
 - [] Delete Mail
 - [] View Attachments
 - [] Download Attachments
-- [] View HTML Mail
-- [] View Plain Text Mail
-- [] View Rich Text Mail
+- [X] View HTML Mail
+- [X] View Plain Text Mail
 - [] View Mail Headers
 - [] View Mail Source
 - [] View Mail Raw
 - [] View Mail Flags
 - [] View Mail Size
-- [] View Mail Date
-- [] View Mail Subject
-- [] View Mail From
+- [X] View Mail Date
+- [X] View Mail Subject
+- [X] View Mail From
 - [] Add ICS Calender
 - [] Offset Timezone for ICS Calender
 

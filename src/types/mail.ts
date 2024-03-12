@@ -16,6 +16,9 @@ export interface ClientInfo {
 export interface Mail {
 	from: [{ address: string, name: string }],
 	to: [{ address: string, name: string }],
+	bcc: [{ address: string, name: string }],
+	cc: [{ address: string, name: string }],
+	date: BigInt,
 	subject: string,
 	body: {body: string, body_html: string},
 }

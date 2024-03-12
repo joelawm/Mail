@@ -34,14 +34,14 @@ export default {
 		 * Grabs all inboxes from the Rust State.
 		 */
 		async setAllInboxes() {
-			let data = await invoke('get_all_mailboxes') as [Mail];
+			let data = await invoke('get_all_inboxes') as [Mail];
 			this.$emit('letters', data);
 		},
 		/**
 		 * Grabs all mail from the selected mailbox.
 		 */
-		async selectMailbox(email: string, mailbox_name: string) {
-			let data = await invoke('get_mailbox', {email, mailbox_name}) as [Mail];
+		async selectMailbox(email: string, mailbox: string) {
+			let data = await invoke('get_mailbox', {email, mailbox}) as [Mail];
 			this.$emit('letters', data);
 		},
 		/**
@@ -57,4 +57,4 @@ export default {
     }
 	},
 }
-</script>../../types/mail
+</script>
