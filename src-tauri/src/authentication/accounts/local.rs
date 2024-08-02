@@ -7,11 +7,12 @@ Changelog:
 --- Version 1.0 - Joe Meyer
 	-- Initial code release.
 -------------*/
-use crate::client::ClientInfo;
+use keyring::Entry;
 
 /// Grab the local accounts from Keyring
 /// # Arguments
-/// * `accounts` - The accounts vector to add the local accounts to.
-fn get_local_accounts(accounts: &mut Vec<ClientInfo>) {
-	todo!("Get the local accounts");
+/// * `email` - The email of the account we are trying to get.
+fn get_local_accounts(email: &str) -> String {
+	let entry = Entry::new("mail", email).unwrap();
+    entry.get_password().unwrap()
 }

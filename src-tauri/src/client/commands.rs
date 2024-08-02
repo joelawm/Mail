@@ -15,6 +15,11 @@ use super::{Client, Mail, ClientState};
 
 #[tauri::command]
 pub async fn client_connect(clients: State<'_, ClientState>) -> Result<Vec<Client>, ()> {
+	// Temporary, but if there are clients already, return them.
+	if clients.client.lock().await.len() > 0 {
+		return Ok(clients.client.lock().await.clone());
+	}
+
 	let accounts = accounts::get_client_accounts();
 
 	let mut set = JoinSet::<Client>::new();
@@ -37,11 +42,7 @@ pub async fn client_connect(clients: State<'_, ClientState>) -> Result<Vec<Clien
 		let mut mail: Vec<Mail> = Vec::new();
 
 		for mailbox in &client.mailbox {
-			if mailbox.mailbox_name == "INBOX" {
-				mail.push(Mail { mailbox_name: mailbox.mailbox_name.clone(), letter: mailbox.letter.clone() });
-			} else {
-				mail.push(Mail { mailbox_name: mailbox.mailbox_name.clone(), letter: Vec::new() });
-			}
+			mail.push(Mail { mailbox_name: mailbox.mailbox_name.clone(), mailbox_clean_name: mailbox.mailbox_clean_name.clone(), letter: Vec::new() });
 		}
 		ret.push(Client { info: client.info.clone(), mailbox: mail })
 	}
@@ -54,12 +55,11 @@ pub async fn get_all_inboxes(clients: State<'_, ClientState>) -> Result<Vec<Lett
 	let mut letters: Vec<Letter> = Vec::new();
 
 	for client in clients.client.lock().await.iter() {
-		for mailbox in &client.mailbox {
-			if mailbox.mailbox_name == "INBOX" {
-				letters.append(&mut mailbox.letter.clone());
-			}
-		}
+		letters.append(client.get_mailbox("INBOX".to_string()).as_mut());
 	}
+
+	// Sort the inbox by datetime
+	letters.sort_by(|a, b| b.date.cmp(&a.date));
 
 	Ok(letters)
 }
@@ -69,11 +69,7 @@ pub async fn get_all_inboxes(clients: State<'_, ClientState>) -> Result<Vec<Lett
 pub async fn get_mailbox(email: String, mailbox: String, clients: State<'_, ClientState>) -> Result<Vec<Letter>, ()> {
 	for client in clients.client.lock().await.iter() {
 		if client.info.email == email {
-			for mail_box in &client.mailbox {
-				if mail_box.mailbox_name == mailbox {
-					return Ok(mail_box.letter.clone());
-				}
-			}
+			return Ok(client.get_mailbox(mailbox));
 		}
 	}
 	Ok(Vec::new())

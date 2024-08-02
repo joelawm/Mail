@@ -28,12 +28,12 @@ impl Domain {
 		}
 	}
 	/// This function returns the domain mailboxes for the given domain.
-	pub fn get_domain_mailboxes(&self) -> Vec<String> {
+	pub fn get_domain_mailboxes(&self) -> Vec<(String, String)> {
 		match self {
-			Domain::Gmail => vec!["[Gmail]/Sent Mail", "[Gmail]/All Mail", "[Gmail]/Starred", "[Gmail]/Trash", "[Gmail]/Spam", "[Gmail]/Drafts", "INBOX",].iter().map(|s| s.to_string()).collect(), 
-			Domain::Outlook => vec!["Sent", "All Mail"].iter().map(|s| s.to_string()).collect(),
-			Domain::Yahoo => vec!["Sent", "All Mail"].iter().map(|s| s.to_string()).collect(),
-			Domain::Failed => vec![""].iter().map(|s| s.to_string()).collect(),
+			Domain::Gmail => vec![("[Gmail]/Sent Mail", "Sent"), ("[Gmail]/All Mail", "All Mail"), ("[Gmail]/Starred", "Starred"), ("[Gmail]/Trash", "Trash"), ("[Gmail]/Spam", "Spam"), ("[Gmail]/Drafts", "Drafts"), ("INBOX", "Inbox")].iter().map(|s| {(s.0.to_string(), s.1.to_string())}).collect(), 
+			Domain::Outlook => vec![("Sent", "Sent")].iter().map(|s| {(s.0.to_string(), s.1.to_string())}).collect(),
+			Domain::Yahoo => vec![("Sent", "Sent")].iter().map(|s| {(s.0.to_string(), s.1.to_string())}).collect(),
+			Domain::Failed => vec![("", "")].iter().map(|s| {(s.0.to_string(), s.1.to_string())}).collect(),
 		}
 	}
 	/// This function returns the domain auth type for the given domain.

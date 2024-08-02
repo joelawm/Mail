@@ -12,10 +12,9 @@ use std::sync::Arc;
 use serde::Serialize;
 use tokio::{sync::Mutex, task::JoinSet};
 use crate::authentication;
-use crate::mail::Mail;
+use crate::mail::{Letter, Mail};
 use crate::authentication::domain::Domain;
 
-mod json;
 pub mod commands;
 
 #[derive(Debug, Clone)]
@@ -58,7 +57,7 @@ impl Client {
 			
 			set.spawn(async move {
 				let mut imap_session = authentication::IMAPSession::new(self_domain, self_info);
-				let mail = Mail::new(mailbox.to_string());
+				let mail = Mail::new(mailbox.0.to_string(), mailbox.1.to_string());
 				let init = mail.init_mailbox(imap_session.get_session()).await;
 
 				// Close the session and return the mailbox.
@@ -82,6 +81,18 @@ impl Client {
 	/// * `mailbox` - The mailbox to create.
 	pub fn create_mailbox(&mut self, mailbox: Mail) {
 		self.mailbox.push(mailbox)
+	}
+
+	/// Get the mailbox.
+	/// # Arguments
+	/// * `mailbox_name` - The mailbox name to get.
+	pub fn get_mailbox(&self, mailbox_name: String) -> Vec<Letter> {
+		for mailbox in &self.mailbox {
+			if mailbox.mailbox_name == mailbox_name {
+				return mailbox.letter.clone()
+			}
+		}
+		Vec::new()
 	}
 }
 

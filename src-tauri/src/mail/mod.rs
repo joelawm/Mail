@@ -17,11 +17,13 @@ mod inbox;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Mail {
 	pub mailbox_name: String,
+	pub mailbox_clean_name: String,
 	pub letter: Vec<Letter>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Letter {
+	pub id: String,
 	pub from: Vec<LetterInformation>,
 	pub to: Vec<LetterInformation>,
 	pub bcc: Vec<LetterInformation>,
@@ -29,6 +31,7 @@ pub struct Letter {
 	pub date: i64,
 	pub subject: String,
 	pub body: LetterBody,
+	pub flags: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -45,8 +48,8 @@ pub struct LetterBody {
 
 impl Mail {
 	/// Create a default Mail struct
-	pub fn new(name: String) -> Self {
-		Self {mailbox_name: name, letter: Vec::new()}
+	pub fn new(name: String, clean_name: String) -> Self {
+		Self {mailbox_name: name, mailbox_clean_name: clean_name, letter: Vec::new()}
 	}
 
 	/// Export the Mail struct to be sent to frontend
@@ -70,26 +73,10 @@ impl Mail {
 			Err(e) => println!("Error selecting mailbox: {}", e)
 		}
 
-		let mut ptr_beg = 1;
-		let mut ptr_end = 15;
-
-		loop {
-			match imap_session.fetch(format!("{}:{}", ptr_beg, ptr_end), "BODY[]") {
-				Ok(msgs) => {
-					inbox::parse_letters(&msgs, &mut self);
-
-					if msgs.len() == 0 {
-						break;
-					} else {
-						break;
-						// Removing these will make the application download all the data
-						// ptr_beg = ptr_end;
-						// ptr_end += 15;
-					}
-				},
-				Err(e) => println!("Error Fetching email: {}", e)
-			};
-		}
+		match imap_session.fetch("1:*", "(FLAGS BODY.PEEK[])") {
+			Ok(msgs) => inbox::parse_letters(&msgs, &mut self),
+			Err(e) => println!("Error Fetching email: {}", e)
+		};
 
 		// Sort the mail by date
 		self.letter.sort_by(|a, b| b.date.cmp(&a.date));

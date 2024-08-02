@@ -20,6 +20,11 @@ pub fn parse_letters(msgs: &ZeroCopy<Vec<Fetch>>, mail: &mut Mail) {
 	for msg in msgs.iter() {
 		let message = MessageParser::default().parse(msg.body().unwrap()).unwrap();
 
+		let id = match message.message_id() {
+			Some(id) => id.to_string(),
+			None => continue,
+		};
+
 		let to = get_to(&message);
 		let from = get_from(&message);
 		let date = get_date(&message);
@@ -27,8 +32,9 @@ pub fn parse_letters(msgs: &ZeroCopy<Vec<Fetch>>, mail: &mut Mail) {
 		let body = get_body(&message);
 		let bcc = get_bcc(&message);
 		let cc = get_cc(&message);
+		let flags = msg.flags().iter().map(|flag| flag.to_string()).collect::<Vec<String>>();
 
-		let letter = Letter {from: from, to: to, bcc: bcc, cc: cc, date: date, subject: subject, body: body};
+		let letter = Letter {id: id, from: from, to: to, bcc: bcc, cc: cc, date: date, subject: subject, body: body, flags: flags};
 
 		// Add the letter to the Mail struct State
 		mail.add_mail(letter);

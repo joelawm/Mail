@@ -41,6 +41,7 @@ export default {
     async refresh() {
       this.client = await invoke('client_connect') as [Client];
       this.mail = await invoke('get_all_inboxes') as [Mail];
+      console.log(this.mail);
     },
   },
   created() {
