@@ -1,45 +1,38 @@
 # Mail
-This is a Cross platform mail application. This was intended for my use on Linux to replace Geary because of design issues I had with it.
 
-### Features:
-- [] Send Mail
-- [] Receive Mail
-- [X] View Mail
-- [X] BCC Mail
-- [x] CC Mail
-- [] Delete Mail
-- [] View Attachments
-- [] Download Attachments
-- [X] View HTML Mail
-- [X] View Plain Text Mail
-- [] View Mail Headers
-- [] View Mail Source
-- [] View Mail Raw
-- [] View Mail Flags
-- [] View Mail Size
-- [X] View Mail Date
-- [X] View Mail Subject
-- [X] View Mail From
-- [] Add ICS Calender
-- [] Offset Timezone for ICS Calender
+Mail is now a Dioxus desktop application. The Vue and Tauri stack has been removed, and the canonical app lives in the `application/` crate.
 
-# Start Developing
-## Install Dependencies
+## Current Scope
+
+- View mail across discovered accounts
+- Browse mailbox folders
+- Read HTML and plain text messages
+- Inspect sender, recipient, subject, and date metadata
+
+## Development
+
+Install the Dioxus CLI once:
+
 ```bash
-cargo install tauri-cli
-npm install
+cargo install dioxus-cli
 ```
 
-## Run
+Run the desktop app from the Dioxus crate:
+
 ```bash
-cargo tauri dev
+cd application
+dx serve --platform desktop
 ```
 
-### Node Version
-More modern versions tend to have issues building with tauri. I recommend using the following version:
+For a compile-only validation pass:
 
-Errors that may occur:
-- `Illegal instruction (core dumped)`
+```bash
+cd application
+cargo check
 ```
-v18.19.0
-```
+
+## Notes
+
+- Tailwind is configured inside `application/`.
+- Linux account discovery currently uses GNOME Online Accounts.
+- Root-level Node and Tauri tooling is no longer part of the project.
